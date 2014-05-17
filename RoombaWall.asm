@@ -10,6 +10,13 @@
 
 
     org 0x0000
+    goto SetUp
+
+    cblock 0x20
+        delayCounter
+    endc
+
+#define CMD_WALL B'10100010'
 
 SetUp
     ; Configure clock
@@ -30,23 +37,23 @@ SetUp
     clrf PWM3IE
 
     ; Prescale 128
-    movlw B'01110000'
+    movlw B'00000000'
     banksel PWM3CLKCON
     movwf PWM3CLKCON
 
-    ; PR = 39061 = 0b1001100010010101
-    movlw B'10011000'
+    ; PR = 12 = - 12
+    movlw B'00000000'
     banksel PWM3PRH
     movwf PWM3PRH
-    movlw B'10010101'
+    movlw D'12'
     banksel PWM3PRL
     movwf PWM3PRL
 
-    ; DC = (39061+1)/2 = 19531 = 0b100110001001011
-    movlw B'01001100'
+    ; DC = 6 = - 6
+    movlw B'00000000'
     banksel PWM3DCH
     movwf PWM3DCH
-    movlw B'01001011'
+    movlw D'6'
     banksel PWM3DCL
     movwf PWM3DCL
 
@@ -54,6 +61,74 @@ SetUp
     clrf PWM3PHL
 
 MainLoop
+    ; This is everything but scalable:
+    bcf PORTA, 4
+    call delay3ms
+    bsf PORTA, 4
+    call delay1ms
+
+    bcf PORTA, 4
+    call delay1ms
+    bsf PORTA, 4
+    call delay3ms
+
+    bcf PORTA, 4
+    call delay3ms
+    bsf PORTA, 4
+    call delay1ms
+
+    bcf PORTA, 4
+    call delay1ms
+    bsf PORTA, 4
+    call delay3ms
+
+    bcf PORTA, 4
+    call delay1ms
+    bsf PORTA, 4
+    call delay3ms
+
+    bcf PORTA, 4
+    call delay1ms
+    bsf PORTA, 4
+    call delay3ms
+
+    bcf PORTA, 4
+    call delay3ms
+    bsf PORTA, 4
+    call delay1ms
+
+    bcf PORTA, 4
+    call delay1ms
+    bsf PORTA, 4
+    call delay3ms
+
     goto MainLoop
+
+
+
+; 6 cycles of fixed delay plus delayCounter*3
+; Must be 500 cycles.
+; 500-6 = 494
+; 494/3=164.666...
+; So, instead of that, we can do:
+; If delayCounter=164:
+; 164*3 = 492
+; Plus 6 fixed cycles, 498.
+; I only need to place now 2 extra cycles
+delay1ms                    ; 2
+    goto $+1                ; 2 These are the two extra cycles above
+    movlw D'164'            ; 1
+    movwf delayCounter      ; 1
+
+delay1msLoop
+    decfsz delayCounter, f  ; 1*delayCounter
+    goto delay1msLoop       ; 2*delayCounter
+    return                  ; 2
+
+delay3ms
+    call delay1ms
+    call delay1ms
+    call delay1ms
+    return
 
     end
