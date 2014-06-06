@@ -28,11 +28,6 @@ SetUp
     banksel TRISA
     clrf TRISA
 
-    ; Enables PWM output pin
-    movlw B'11100000'
-    banksel PWM3CON
-    movwf PWM3CON
-
     ; Disable interrupts
     clrf PWM3IE
 
@@ -60,6 +55,18 @@ SetUp
     clrf PWM3PHH
     clrf PWM3PHL
 
+; Enables PWM output pin
+    movlw B'11100000'
+    banksel PWM3CON
+    movwf PWM3CON
+
+	BANKSEL PORTA ;
+	CLRF PORTA ;Init PORTA
+	BANKSEL LATA ;Data Latch
+	CLRF LATA ;
+	BANKSEL ANSELA ;
+	CLRF ANSELA ;digital I/O
+	BANKSEL PORTA ;
 MainLoop
     ; This is everything but scalable:
     bcf PORTA, 4
