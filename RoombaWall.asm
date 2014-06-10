@@ -31,6 +31,10 @@ SetUp
 	; Disable interrupts
 	clrf PWM3IE
 
+	;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Configure carrier: 38Hz
+	;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 	; Prescale 128
 	movlw B'00000000'
 	banksel PWM3CLKCON
@@ -60,6 +64,44 @@ SetUp
 	banksel PWM3CON
 	movwf PWM3CON
 
+	;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Configure waveform: 
+	; 500microseconds/8miliseconds
+	;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Prescale 16
+	banksel APFCON	
+	movlw B'00001010'
+	movwf APFCON
+
+	movlw B'01000000'
+	banksel PWM2CLKCON
+	movwf PWM2CLKCON
+
+	; PR = 248 = - 248
+	movlw B'00000000'
+	banksel PWM2PRH
+	movwf PWM2PRH
+	movlw D'248'
+	banksel PWM2PRL
+	movwf PWM2PRL
+
+	; DC = 15 = - 15
+	movlw B'00000000'
+	banksel PWM2DCH
+	movwf PWM2DCH
+	movlw D'15'
+	banksel PWM2DCL
+	movwf PWM2DCL
+
+	clrf PWM2PHH
+	clrf PWM2PHL
+
+	; Enables PWM output pin
+	movlw B'11100000'
+	banksel PWM2CON
+	movwf PWM2CON
+
+
 	BANKSEL PORTA ;
 	CLRF PORTA ;Init PORTA
 	BANKSEL LATA ;Data Latch
@@ -71,11 +113,7 @@ SetUp
 
 MainLoop
 	; This is everything but scalable:
-	bcf PORTA, 4
-	call delay3ms
-	bsf PORTA, 4
-	call delay1ms
-
+	sleep
 	goto MainLoop
 
 
