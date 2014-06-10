@@ -55,7 +55,7 @@ SetUp
 	clrf PWM3PHH
 	clrf PWM3PHL
 
-; Enables PWM output pin
+	; Enables PWM output pin
 	movlw B'11100000'
 	banksel PWM3CON
 	movwf PWM3CON
@@ -66,48 +66,15 @@ SetUp
 	CLRF LATA ;
 	BANKSEL ANSELA ;
 	CLRF ANSELA ;digital I/O
+
 	BANKSEL PORTA ;
+
 MainLoop
 	; This is everything but scalable:
 	bcf PORTA, 4
 	call delay3ms
 	bsf PORTA, 4
 	call delay1ms
-
-	bcf PORTA, 4
-	call delay1ms
-	bsf PORTA, 4
-	call delay3ms
-
-	bcf PORTA, 4
-	call delay3ms
-	bsf PORTA, 4
-	call delay1ms
-
-	bcf PORTA, 4
-	call delay1ms
-	bsf PORTA, 4
-	call delay3ms
-
-	bcf PORTA, 4
-	call delay1ms
-	bsf PORTA, 4
-	call delay3ms
-
-	bcf PORTA, 4
-	call delay1ms
-	bsf PORTA, 4
-	call delay3ms
-
-	bcf PORTA, 4
-	call delay3ms
-	bsf PORTA, 4
-	call delay1ms
-
-	bcf PORTA, 4
-	call delay1ms
-	bsf PORTA, 4
-	call delay3ms
 
 	goto MainLoop
 
