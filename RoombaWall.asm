@@ -113,7 +113,7 @@ SetUp
 
 MainLoop
 	; This is everything but scalable:
-	sleep
+	call delay1ms
 	goto MainLoop
 
 
