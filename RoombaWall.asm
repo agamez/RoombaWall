@@ -89,7 +89,7 @@ SetUp
 	movlw B'00000000'
 	banksel PWM2DCH
 	movwf PWM2DCH
-	movlw D'15'
+	movlw D'233'
 	banksel PWM2DCL
 	movwf PWM2DCL
 
